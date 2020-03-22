@@ -1,0 +1,353 @@
+Script started on 2020-03-22 23:02:22+0530
+]0;ankitg@ankitg-LIFEBOOK-A555: ~/BPEC/bpec-ankitg/P01ankitg@ankitg-LIFEBOOK-A555:~/BPEC/bpec-ankitg/P01$ bash -x commands.sh 
++ cat assignment.txt
++ Write a simple C program to add two numbers.
++ Get its preprocessed output, assembly output, object output, and executable output for x86
++ Get its preprocessed output, assembly output, object output, and executable output for ARM
++ Observe the sizes, content differences.
++ Given the final executable / object file, disassemble it to get its assembly code
++ Compare with its corresponding assembly output
++ Post in WhatsApp, as how did you get a) preprocessed output, b) assembly output, c) object output, d) executable output, and e) disassembled output
++ cat add_two.c
+int main()
+{
+//int a=2,b=2,c=a+b;
+int c=1+2;
+return c;
+}+ gcc -E add_two.c
+# 1 "add_two.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 32 "<command-line>" 2
+# 1 "add_two.c"
+int main()
+{
+
+int c=1+2;
+return c;
+}
++ gcc -S add_two.c -o add_two_x86.s
++ cat add_two_x86.s
+	.file	"add_two.c"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	$3, -4(%rbp)
+	movl	-4(%rbp), %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0"
+	.section	.note.GNU-stack,"",@progbits
++ gcc -c add_two.c -o add_two_x86.o
++ objdump -d add_two_x86.o
+
+add_two_x86.o:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+0000000000000000 <main>:
+   0:	55                   	push   %rbp
+   1:	48 89 e5             	mov    %rsp,%rbp
+   4:	c7 45 fc 03 00 00 00 	movl   $0x3,-0x4(%rbp)
+   b:	8b 45 fc             	mov    -0x4(%rbp),%eax
+   e:	5d                   	pop    %rbp
+   f:	c3                   	retq   
++ gcc add_two.c -o add_two_x86
++ objdump -d add_two_x86
+
+add_two_x86:     file format elf64-x86-64
+
+
+Disassembly of section .init:
+
+00000000000004b8 <_init>:
+ 4b8:	48 83 ec 08          	sub    $0x8,%rsp
+ 4bc:	48 8b 05 25 0b 20 00 	mov    0x200b25(%rip),%rax        # 200fe8 <__gmon_start__>
+ 4c3:	48 85 c0             	test   %rax,%rax
+ 4c6:	74 02                	je     4ca <_init+0x12>
+ 4c8:	ff d0                	callq  *%rax
+ 4ca:	48 83 c4 08          	add    $0x8,%rsp
+ 4ce:	c3                   	retq   
+
+Disassembly of section .plt:
+
+00000000000004d0 <.plt>:
+ 4d0:	ff 35 f2 0a 20 00    	pushq  0x200af2(%rip)        # 200fc8 <_GLOBAL_OFFSET_TABLE_+0x8>
+ 4d6:	ff 25 f4 0a 20 00    	jmpq   *0x200af4(%rip)        # 200fd0 <_GLOBAL_OFFSET_TABLE_+0x10>
+ 4dc:	0f 1f 40 00          	nopl   0x0(%rax)
+
+Disassembly of section .plt.got:
+
+00000000000004e0 <__cxa_finalize@plt>:
+ 4e0:	ff 25 12 0b 20 00    	jmpq   *0x200b12(%rip)        # 200ff8 <__cxa_finalize@GLIBC_2.2.5>
+ 4e6:	66 90                	xchg   %ax,%ax
+
+Disassembly of section .text:
+
+00000000000004f0 <_start>:
+ 4f0:	31 ed                	xor    %ebp,%ebp
+ 4f2:	49 89 d1             	mov    %rdx,%r9
+ 4f5:	5e                   	pop    %rsi
+ 4f6:	48 89 e2             	mov    %rsp,%rdx
+ 4f9:	48 83 e4 f0          	and    $0xfffffffffffffff0,%rsp
+ 4fd:	50                   	push   %rax
+ 4fe:	54                   	push   %rsp
+ 4ff:	4c 8d 05 7a 01 00 00 	lea    0x17a(%rip),%r8        # 680 <__libc_csu_fini>
+ 506:	48 8d 0d 03 01 00 00 	lea    0x103(%rip),%rcx        # 610 <__libc_csu_init>
+ 50d:	48 8d 3d e6 00 00 00 	lea    0xe6(%rip),%rdi        # 5fa <main>
+ 514:	ff 15 c6 0a 20 00    	callq  *0x200ac6(%rip)        # 200fe0 <__libc_start_main@GLIBC_2.2.5>
+ 51a:	f4                   	hlt    
+ 51b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+
+0000000000000520 <deregister_tm_clones>:
+ 520:	48 8d 3d e9 0a 20 00 	lea    0x200ae9(%rip),%rdi        # 201010 <__TMC_END__>
+ 527:	55                   	push   %rbp
+ 528:	48 8d 05 e1 0a 20 00 	lea    0x200ae1(%rip),%rax        # 201010 <__TMC_END__>
+ 52f:	48 39 f8             	cmp    %rdi,%rax
+ 532:	48 89 e5             	mov    %rsp,%rbp
+ 535:	74 19                	je     550 <deregister_tm_clones+0x30>
+ 537:	48 8b 05 9a 0a 20 00 	mov    0x200a9a(%rip),%rax        # 200fd8 <_ITM_deregisterTMCloneTable>
+ 53e:	48 85 c0             	test   %rax,%rax
+ 541:	74 0d                	je     550 <deregister_tm_clones+0x30>
+ 543:	5d                   	pop    %rbp
+ 544:	ff e0                	jmpq   *%rax
+ 546:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 54d:	00 00 00 
+ 550:	5d                   	pop    %rbp
+ 551:	c3                   	retq   
+ 552:	0f 1f 40 00          	nopl   0x0(%rax)
+ 556:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 55d:	00 00 00 
+
+0000000000000560 <register_tm_clones>:
+ 560:	48 8d 3d a9 0a 20 00 	lea    0x200aa9(%rip),%rdi        # 201010 <__TMC_END__>
+ 567:	48 8d 35 a2 0a 20 00 	lea    0x200aa2(%rip),%rsi        # 201010 <__TMC_END__>
+ 56e:	55                   	push   %rbp
+ 56f:	48 29 fe             	sub    %rdi,%rsi
+ 572:	48 89 e5             	mov    %rsp,%rbp
+ 575:	48 c1 fe 03          	sar    $0x3,%rsi
+ 579:	48 89 f0             	mov    %rsi,%rax
+ 57c:	48 c1 e8 3f          	shr    $0x3f,%rax
+ 580:	48 01 c6             	add    %rax,%rsi
+ 583:	48 d1 fe             	sar    %rsi
+ 586:	74 18                	je     5a0 <register_tm_clones+0x40>
+ 588:	48 8b 05 61 0a 20 00 	mov    0x200a61(%rip),%rax        # 200ff0 <_ITM_registerTMCloneTable>
+ 58f:	48 85 c0             	test   %rax,%rax
+ 592:	74 0c                	je     5a0 <register_tm_clones+0x40>
+ 594:	5d                   	pop    %rbp
+ 595:	ff e0                	jmpq   *%rax
+ 597:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+ 59e:	00 00 
+ 5a0:	5d                   	pop    %rbp
+ 5a1:	c3                   	retq   
+ 5a2:	0f 1f 40 00          	nopl   0x0(%rax)
+ 5a6:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 5ad:	00 00 00 
+
+00000000000005b0 <__do_global_dtors_aux>:
+ 5b0:	80 3d 59 0a 20 00 00 	cmpb   $0x0,0x200a59(%rip)        # 201010 <__TMC_END__>
+ 5b7:	75 2f                	jne    5e8 <__do_global_dtors_aux+0x38>
+ 5b9:	48 83 3d 37 0a 20 00 	cmpq   $0x0,0x200a37(%rip)        # 200ff8 <__cxa_finalize@GLIBC_2.2.5>
+ 5c0:	00 
+ 5c1:	55                   	push   %rbp
+ 5c2:	48 89 e5             	mov    %rsp,%rbp
+ 5c5:	74 0c                	je     5d3 <__do_global_dtors_aux+0x23>
+ 5c7:	48 8b 3d 3a 0a 20 00 	mov    0x200a3a(%rip),%rdi        # 201008 <__dso_handle>
+ 5ce:	e8 0d ff ff ff       	callq  4e0 <__cxa_finalize@plt>
+ 5d3:	e8 48 ff ff ff       	callq  520 <deregister_tm_clones>
+ 5d8:	c6 05 31 0a 20 00 01 	movb   $0x1,0x200a31(%rip)        # 201010 <__TMC_END__>
+ 5df:	5d                   	pop    %rbp
+ 5e0:	c3                   	retq   
+ 5e1:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+ 5e8:	f3 c3                	repz retq 
+ 5ea:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+
+00000000000005f0 <frame_dummy>:
+ 5f0:	55                   	push   %rbp
+ 5f1:	48 89 e5             	mov    %rsp,%rbp
+ 5f4:	5d                   	pop    %rbp
+ 5f5:	e9 66 ff ff ff       	jmpq   560 <register_tm_clones>
+
+00000000000005fa <main>:
+ 5fa:	55                   	push   %rbp
+ 5fb:	48 89 e5             	mov    %rsp,%rbp
+ 5fe:	c7 45 fc 03 00 00 00 	movl   $0x3,-0x4(%rbp)
+ 605:	8b 45 fc             	mov    -0x4(%rbp),%eax
+ 608:	5d                   	pop    %rbp
+ 609:	c3                   	retq   
+ 60a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+
+0000000000000610 <__libc_csu_init>:
+ 610:	41 57                	push   %r15
+ 612:	41 56                	push   %r14
+ 614:	49 89 d7             	mov    %rdx,%r15
+ 617:	41 55                	push   %r13
+ 619:	41 54                	push   %r12
+ 61b:	4c 8d 25 ce 07 20 00 	lea    0x2007ce(%rip),%r12        # 200df0 <__frame_dummy_init_array_entry>
+ 622:	55                   	push   %rbp
+ 623:	48 8d 2d ce 07 20 00 	lea    0x2007ce(%rip),%rbp        # 200df8 <__init_array_end>
+ 62a:	53                   	push   %rbx
+ 62b:	41 89 fd             	mov    %edi,%r13d
+ 62e:	49 89 f6             	mov    %rsi,%r14
+ 631:	4c 29 e5             	sub    %r12,%rbp
+ 634:	48 83 ec 08          	sub    $0x8,%rsp
+ 638:	48 c1 fd 03          	sar    $0x3,%rbp
+ 63c:	e8 77 fe ff ff       	callq  4b8 <_init>
+ 641:	48 85 ed             	test   %rbp,%rbp
+ 644:	74 20                	je     666 <__libc_csu_init+0x56>
+ 646:	31 db                	xor    %ebx,%ebx
+ 648:	0f 1f 84 00 00 00 00 	nopl   0x0(%rax,%rax,1)
+ 64f:	00 
+ 650:	4c 89 fa             	mov    %r15,%rdx
+ 653:	4c 89 f6             	mov    %r14,%rsi
+ 656:	44 89 ef             	mov    %r13d,%edi
+ 659:	41 ff 14 dc          	callq  *(%r12,%rbx,8)
+ 65d:	48 83 c3 01          	add    $0x1,%rbx
+ 661:	48 39 dd             	cmp    %rbx,%rbp
+ 664:	75 ea                	jne    650 <__libc_csu_init+0x40>
+ 666:	48 83 c4 08          	add    $0x8,%rsp
+ 66a:	5b                   	pop    %rbx
+ 66b:	5d                   	pop    %rbp
+ 66c:	41 5c                	pop    %r12
+ 66e:	41 5d                	pop    %r13
+ 670:	41 5e                	pop    %r14
+ 672:	41 5f                	pop    %r15
+ 674:	c3                   	retq   
+ 675:	90                   	nop
+ 676:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+ 67d:	00 00 00 
+
+0000000000000680 <__libc_csu_fini>:
+ 680:	f3 c3                	repz retq 
+
+Disassembly of section .fini:
+
+0000000000000684 <_fini>:
+ 684:	48 83 ec 08          	sub    $0x8,%rsp
+ 688:	48 83 c4 08          	add    $0x8,%rsp
+ 68c:	c3                   	retq   
++ arm-linux-gnueabihf-gcc -E add_two.c
+# 1 "add_two.c"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/opt/gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf/arm-linux-gnueabihf/libc/usr/include/stdc-predef.h" 1 3 4
+# 32 "<command-line>" 2
+# 1 "add_two.c"
+int main()
+{
+
+int c=1+2;
+return c;
+}
++ arm-linux-gnueabihf-gcc -S add_two.c -o add_two_arm.s
++ cat add_two_arm.s
+	.arch armv7-a
+	.eabi_attribute 28, 1
+	.eabi_attribute 20, 1
+	.eabi_attribute 21, 1
+	.eabi_attribute 23, 3
+	.eabi_attribute 24, 1
+	.eabi_attribute 25, 1
+	.eabi_attribute 26, 2
+	.eabi_attribute 30, 6
+	.eabi_attribute 34, 1
+	.eabi_attribute 18, 4
+	.file	"add_two.c"
+	.text
+	.align	1
+	.global	main
+	.syntax unified
+	.thumb
+	.thumb_func
+	.fpu vfpv3-d16
+	.type	main, %function
+main:
+	@ args = 0, pretend = 0, frame = 8
+	@ frame_needed = 1, uses_anonymous_args = 0
+	@ link register save eliminated.
+	push	{r7}
+	sub	sp, sp, #12
+	add	r7, sp, #0
+	movs	r3, #3
+	str	r3, [r7, #4]
+	ldr	r3, [r7, #4]
+	mov	r0, r3
+	adds	r7, r7, #12
+	mov	sp, r7
+	@ sp needed
+	ldr	r7, [sp], #4
+	bx	lr
+	.size	main, .-main
+	.ident	"GCC: (Linaro GCC 6.5-2018.12) 6.5.0"
+	.section	.note.GNU-stack,"",%progbits
++ arm-linux-gnueabihf-gcc -c add_two.c -o add_two_arm.o
++ arm-linux-gnueabihf-objdump -d add_two_arm.o
+
+add_two_arm.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	b480      	push	{r7}
+   2:	b083      	sub	sp, #12
+   4:	af00      	add	r7, sp, #0
+   6:	2303      	movs	r3, #3
+   8:	607b      	str	r3, [r7, #4]
+   a:	687b      	ldr	r3, [r7, #4]
+   c:	4618      	mov	r0, r3
+   e:	370c      	adds	r7, #12
+  10:	46bd      	mov	sp, r7
+  12:	f85d 7b04 	ldr.w	r7, [sp], #4
+  16:	4770      	bx	lr
++ arm-linux-gnueabihf-gcc add_two.c -o add_two_arm
++ arm-linux-gnueabihf-objdump -d add_two_arm.o
+
+add_two_arm.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <main>:
+   0:	b480      	push	{r7}
+   2:	b083      	sub	sp, #12
+   4:	af00      	add	r7, sp, #0
+   6:	2303      	movs	r3, #3
+   8:	607b      	str	r3, [r7, #4]
+   a:	687b      	ldr	r3, [r7, #4]
+   c:	4618      	mov	r0, r3
+   e:	370c      	adds	r7, #12
+  10:	46bd      	mov	sp, r7
+  12:	f85d 7b04 	ldr.w	r7, [sp], #4
+  16:	4770      	bx	lr
++ ls -lt
+total 64
+-rwxrwxr-x 1 ankitg ankitg 9388 Mar 22 23:02 add_two_arm
+-rw-rw-r-- 1 ankitg ankitg  828 Mar 22 23:02 add_two_arm.o
+-rw-rw-r-- 1 ankitg ankitg  771 Mar 22 23:02 add_two_arm.s
+-rw-rw-r-- 1 ankitg ankitg 8192 Mar 22 23:02 typescript
+-rwxrwxr-x 1 ankitg ankitg 8168 Mar 22 23:02 add_two_x86
+-rw-rw-r-- 1 ankitg ankitg 1232 Mar 22 23:02 add_two_x86.o
+-rw-rw-r-- 1 ankitg ankitg  395 Mar 22 23:02 add_two_x86.s
+-rw-rw-r-- 1 ankitg ankitg  757 Mar 22 23:00 commands.sh
+-rwxrwxr-x 1 ankitg ankitg 8168 Mar 22 22:17 add_two
+-rw-rw-r-- 1 ankitg ankitg  558 Mar 22 22:14 assignment.txt
+-rw-rw-r-- 1 ankitg ankitg   56 Mar 22 22:09 add_two.c
+]0;ankitg@ankitg-LIFEBOOK-A555: ~/BPEC/bpec-ankitg/P01ankitg@ankitg-LIFEBOOK-A555:~/BPEC/bpec-ankitg/P01$
+
